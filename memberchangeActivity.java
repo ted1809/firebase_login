@@ -50,7 +50,6 @@ public class memberchangeActivity extends AppCompatActivity {
                     Log.e("클릭", "클릭");
                     memberChange();
                     startToast("정보변경 완료");
-                    finish();
                     break;
             }
         }
@@ -61,12 +60,8 @@ public class memberchangeActivity extends AppCompatActivity {
         String phone = ((EditText)findViewById(R.id.phoneEditText)).getText().toString();
 
         if(name.length() > 0 && phone.length() > 0){
-            /*DocumentReference memberRef = db.collection("users").document(user.getEmail());
-            memberRef.update("name", name);
-            memberRef.update("phoneNumber", phone);*/
-
             Intent intent = getIntent();
-            memberinfo memberRef = (memberinfo)intent.getSerializableExtra("memberRef");
+            final memberinfo memberRef = (memberinfo)intent.getSerializableExtra("memberRef");
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -77,6 +72,7 @@ public class memberchangeActivity extends AppCompatActivity {
                          @Override
                          public void onSuccess(Void aVoid) {
                              startToast("회원 정보 변경에 성공하였습니다");
+                             startActivity(MainActivity.class, memberRef);
                              finish();
                          }
                      })
@@ -97,14 +93,11 @@ public class memberchangeActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void startActivity(Class c){
+    private void startActivity(Class c, memberinfo memberinfo){
         Intent intent=new Intent(this,c);
-        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("memberRef", memberinfo);
+        intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    private String get_member_lockerID(memberinfo memberinfo){
-        return memberinfo.getLockerID();
     }
 
     private void setValue(memberinfo memberinfo, String a, String b){

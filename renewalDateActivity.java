@@ -84,6 +84,7 @@ public class renewalDateActivity extends AppCompatActivity {
                 case R.id.renewalButton:
                     renewal();
                     startToast("사물함 대여기한이 연장되었습니다.");
+                    startDActivity(MainActivity.class, member);
                     finish();
                     break;
             }
@@ -120,25 +121,6 @@ public class renewalDateActivity extends AppCompatActivity {
             renewDateText.setText(td.format(cal.getTime()));
             startToast("연장날짜: " + td.format(cal.getTime()));
         }
-
-        /*switch (a){
-            case "1개월":
-                cal.setTime(Cdate);
-                cal.add(Calendar.MONTH,1);
-                startToast("연장날짜: " + td.format(cal.getTime()));
-            case "3개월":
-                cal.setTime(Cdate);
-                cal.add(Calendar.MONTH,3);
-                startToast("연장날짜: " + td.format(cal.getTime()));
-            case "6개월":
-                cal.setTime(Cdate);
-                cal.add(Calendar.MONTH,6);
-                startToast("연장날짜: " + td.format(cal.getTime()));
-            case "1학기(4개월)":
-                cal.setTime(Cdate);
-                cal.add(Calendar.MONTH,4);
-                startToast("연장날짜: " + td.format(cal.getTime()));
-        }*/
     }
 
     private void renewal(){
@@ -151,10 +133,23 @@ public class renewalDateActivity extends AppCompatActivity {
         hopperUpdates.put("date", renewDate);
 
         hopperRef.updateChildren(hopperUpdates);
+
+        change_date(member, renewDate);
     }
 
     private void startToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void change_date(memberinfo memberinfo, String a){
+        memberinfo.setDate(a);
+    }
+
+    private void startDActivity(Class c, memberinfo memberinfo){
+        Intent intent=new Intent(this,c);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("memberRef", memberinfo);
+        startActivity(intent);
     }
 }
 
